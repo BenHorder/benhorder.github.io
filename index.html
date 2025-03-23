@@ -1,1 +1,260 @@
-<p>WIP</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Disabled!</title>
+    <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+    background-color: #f2ebe4;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 350;
+    font-style: normal;
+}
+
+
+
+body, footer {
+    color: #000000;
+}
+
+#top-text {
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    position: relative;
+    margin-top: 2%;
+}
+
+.link-boxes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    margin: 10px auto;
+    max-width: 800px;
+}
+
+.link-box {
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 0;
+    border: 1px solid #000;
+    text-align: center;
+    width: 500px;
+    transition: transform 0.2s;
+}
+
+.link-box:hover {
+    transform: translateY(-5px);
+}
+
+.link-box a {
+    color: #2b2b2b;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.link-box .title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.link-box .description {
+    font-size: 14px;
+    color: #555;
+}
+
+footer {
+    border-top: 0.5px solid #9e9fa1;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+}
+
+footer p {
+    margin-top: 20px;
+}
+
+footer a {
+    color: #2b2b2b;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: all 0.2s ease;
+}
+
+footer a:hover {
+    color: #555;
+    text-decoration: underline;
+}
+
+    </style>
+    <script>
+
+// VARIABLES
+let email = "Ben.Horder@outlook.com";
+let name = "Ben Horder";
+let favicon = "hi";
+let aboutMe = "hi, i'm  ben i code sometimes i guess...<br>i also like to overthink things that will never happen.";
+let githubUsername = "BenHorder";
+let links = {
+    "GitHub": `https://github.com/${githubUsername}`,
+    "Email": `mailto:${email}`,
+    "100% Inspired by t3.gg": "https://t3.gg/"
+};
+let customBoxes = [
+    {
+        "title": "Software I use",
+        "description": "This is the software i use to code and some other stuff",
+        "url": "https://techbible.ai/user-profile/ben-horder-23124975?utm_source=techbible"
+    }];
+let boxLinks = [];
+
+// CODE
+document.addEventListener("DOMContentLoaded", function () {
+    document.title = `${name}`;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '30px Arial';
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(favicon, 20, 20);
+    
+    const faviconLink = document.createElement('link');
+    faviconLink.rel = 'icon';
+    faviconLink.type = 'image/png';
+    faviconLink.href = canvas.toDataURL('image/png');
+    document.head.appendChild(faviconLink);
+
+    document.getElementById("top-text").innerHTML = aboutMe.toLowerCase();
+    
+    displayCustomBoxes();
+    
+    fetchGitHubRepos();
+    
+    const footerP = document.querySelector("footer p");
+    footerP.innerHTML = "";
+    
+    for (const [display, link] of Object.entries(links)) {
+        const a = document.createElement("a");
+        a.textContent = display.toLowerCase();
+        a.href = link;
+        a.target = "_blank";
+        footerP.appendChild(a);
+    }
+});
+
+function fetchGitHubRepos() {
+    const apiUrl = `https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=6`;
+    
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(repos => {
+            const ownRepos = repos.filter(repo => !repo.fork);
+            
+            const reposToShow = ownRepos.slice(0, 3);
+            
+            boxLinks = reposToShow.map(repo => ({
+                title: repo.name,
+                description: repo.description || "No description available",
+                url: repo.html_url
+            }));
+            
+            displayRepoBoxes();
+        })
+        .catch(error => {
+            console.error('Error fetching GitHub repos:', error);
+        });
+}
+
+function displayCustomBoxes() {
+    const linkBoxesContainer = document.getElementById("link-boxes");
+    
+    if (customBoxes.length === 0) return;
+    
+    customBoxes.forEach(link => {
+        const box = document.createElement("div");
+        box.className = "link-box";
+        
+        const a = document.createElement("a");
+        
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = link.title.toLowerCase();
+        
+        const description = document.createElement("div");
+        description.className = "description";
+        description.textContent = link.description.toLowerCase();
+        
+        a.appendChild(title);
+        a.appendChild(description);
+        
+        a.href = link.url;
+        a.target = "_blank";
+        
+        box.appendChild(a);
+        linkBoxesContainer.appendChild(box);
+    });
+}
+
+function displayRepoBoxes() {
+    const linkBoxesContainer = document.getElementById("link-boxes");
+    
+    boxLinks.forEach(link => {
+        const box = document.createElement("div");
+        box.className = "link-box";
+        
+        const a = document.createElement("a");
+        
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = link.title.toLowerCase();
+        
+        const description = document.createElement("div");
+        description.className = "description";
+        description.textContent = link.description.toLowerCase();
+        
+        a.appendChild(title);
+        a.appendChild(description);
+        
+        a.href = link.url;
+        a.target = "_blank";
+        
+        box.appendChild(a);
+        linkBoxesContainer.appendChild(box);
+    });
+}
+
+    </script>
+</head>
+<body>
+    <main>
+        <p id="top-text">If JavaScript is disabled, the site will not work.</p>
+        <div id="link-boxes" class="link-boxes"></div>
+    </main>
+    <footer>
+        <p>If JavaScript is disabled, the site will not work.</p>
+    </footer>
+</body>
+</html>
